@@ -1,0 +1,27 @@
+name: SSH brute-force attempt
+type: frequency
+index: rsb-siem-*
+
+num_events: 8
+timeframe:
+  minutes: 5
+
+filter:
+  - query:
+      query_string:
+        query: 'event.module:"system" AND fileset.name:"auth" AND event.outcome:"failure"'
+
+query_key: source.ip
+
+alert:
+  - post
+
+http_post_url: "http://10.10.0.12:5001/alert"
+http_post_payload:
+  rule: name
+  src_ip: source.ip
+  user: user.name
+  hostname: host.name
+  count: num_matches
+
+include: ["@timestamp", "source.ip", "user.name", "host.name", "message"]

@@ -1,0 +1,19 @@
+name: Sudo authentication failures
+type: frequency
+index: rsb-siem-*
+
+num_events: 5
+timeframe:
+  minutes: 5
+
+filter:
+  - query:
+      query_string:
+        query: 'event.module:"system" AND message:"authentication failure" AND (message:"sudo" OR system.auth.ssh.event:"Failed")'
+
+query_key: user.name
+
+alert:
+  - post
+
+http_post_url: "http://10.10.0.12:5001/alert"

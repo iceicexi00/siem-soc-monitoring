@@ -1,0 +1,16 @@
+name: New user account created
+type: any
+index: rsb-siem-*
+
+filter:
+  - query:
+      query_string:
+        query: '(process.name:useradd OR process.name:adduser) OR (auditd.summary.how:"/usr/sbin/useradd") OR (message:"new user:")'
+
+realert:
+  minutes: 1
+
+alert:
+  - post
+
+http_post_url: "http://10.10.0.12:5001/alert"

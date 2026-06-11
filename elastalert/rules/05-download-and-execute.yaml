@@ -1,0 +1,20 @@
+name: Suspicious download-and-execute pattern
+type: any
+index: rsb-siem-*
+
+filter:
+  - query:
+      query_string:
+        query: >
+          (process.command_line:(*curl* OR *wget*) AND process.command_line:(*\|* AND (*bash* OR *sh* OR *python*)))
+          OR tags:"download_and_exec"
+          OR tags:"reverse_shell_candidate"
+          OR tags:"base64_obfuscation"
+
+realert:
+  minutes: 1
+
+alert:
+  - post
+
+http_post_url: "http://10.10.0.12:5001/alert"

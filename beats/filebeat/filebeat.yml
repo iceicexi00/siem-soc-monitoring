@@ -1,0 +1,36 @@
+filebeat.inputs:
+  - type: filestream
+    id: postgres-logs
+    enabled: true
+    paths:
+      - /var/lib/postgresql/14/main/log/*.log
+    fields:
+      app: postgres
+      role: database
+
+  - type: filestream
+    id: sysmon-linux
+    enabled: true
+    paths:
+      - /var/log/syslog
+    include_lines: ['Linux-Sysmon']
+    fields:
+      app: sysmon
+      source_provider: "Linux-Sysmon"
+    parsers:
+      - syslog: ~
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+output.logstash:
+  hosts: ["10.10.0.10:5044"]
+
+processors:
+  - add_host_metadata: ~
+  - add_fields:
+      target: ''
+      fields:
+        organization: "RSB"
+        source_role: "db-server"

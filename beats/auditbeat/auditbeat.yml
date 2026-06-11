@@ -1,0 +1,35 @@
+auditbeat.modules:
+  - module: auditd
+    audit_rules: |
+      -w /etc/passwd -p wa -k identity
+      -w /etc/group -p wa -k identity
+      -w /etc/shadow -p wa -k identity
+      -w /etc/sudoers -p wa -k identity
+      -w /etc/sudoers.d/ -p wa -k identity
+      -a always,exit -F arch=b64 -S execve -k process_exec
+      -w /usr/bin/sudo -p x -k privilege_escalation
+
+  - module: file_integrity
+    paths:
+      - /bin
+      - /usr/bin
+      - /etc
+
+  - module: system
+    datasets:
+      - host
+      - login
+      - process
+      - user
+    state.period: 12h
+
+output.logstash:
+  hosts: ["10.10.0.10:5044"]
+
+processors:
+  - add_host_metadata: ~
+  - add_fields:
+      target: ''
+      fields:
+        organization: "RSB"
+        source_role: "db-server"

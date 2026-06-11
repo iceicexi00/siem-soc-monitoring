@@ -1,0 +1,23 @@
+name: Large outbound data transfer
+type: metric_aggregation
+index: rsb-siem-*
+
+buffer_time:
+  minutes: 10
+
+metric_agg_key: nginx.access.body_sent.bytes
+metric_agg_type: sum
+
+query_key: source.address
+
+max_threshold: 1073741824   # 1 ГБ за 10 минут
+
+filter:
+  - query:
+      query_string:
+        query: 'event.module:"nginx" AND event.dataset:"nginx.access"'
+
+alert:
+  - post
+
+http_post_url: "http://10.10.0.12:5001/alert"

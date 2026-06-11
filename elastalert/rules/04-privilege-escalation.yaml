@@ -1,0 +1,13 @@
+name: Privilege escalation - user added to sudo
+type: any
+index: rsb-siem-*
+
+filter:
+  - query:
+      query_string:
+        query: '(process.name:usermod AND process.args:"sudo") OR (auditd.summary.object.primary:"/etc/sudoers" AND auditd.summary.how:"/usr/bin/visudo") OR (auditd.summary.object.primary:"/etc/sudoers.d") OR (message:"to group sudo")'
+
+alert:
+  - post
+
+http_post_url: "http://10.10.0.12:5001/alert"

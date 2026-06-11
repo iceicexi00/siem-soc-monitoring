@@ -1,0 +1,13 @@
+name: Critical system file modification
+type: any
+index: rsb-siem-*
+
+filter:
+  - query:
+      query_string:
+        query: 'auditd.summary.object.primary:("/etc/passwd" OR "/etc/shadow" OR "/etc/sudoers" OR "/etc/group") AND tags:identity'
+
+alert:
+  - post
+
+http_post_url: "http://10.10.0.12:5001/alert"

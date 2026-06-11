@@ -1,0 +1,27 @@
+# Secrets & certificates — never commit real ones
+*.key
+*.pem
+*.crt
+*.p12
+*.keystore
+secrets.*
+.env
+
+# Logs & runtime data
+*.log
+*.jsonl
+data/
+logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
